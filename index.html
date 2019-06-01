@@ -181,6 +181,44 @@
   </div>
 </template>
 
+<script>
+  // размер фаербола в пикселях
+  var fireballSize = 22;
+
+  // скоростью фаербола
+  var getFireballSpeed = function (left) {
+    if(left) {
+      // фаербол летит по ветру
+      return 5;
+    }
+    // летит против ветра
+    return 2
+  };
+
+  console.log(getFireballSpeed(true));
+
+  //скорость мага
+  var wizardSpeed = 3;
+
+  // ширина мага
+  var wizardWidth  = 70;
+
+  // высота мага
+  var getWizardHeight = function () {
+    return 1.337 * wizardWidth;
+  };
+
+  // ширину игровой области
+  var getWizardX  = function (width) {
+    return width / 2 - wizardWidth;
+  };
+  // высота игровой области
+  var getWizardY = function (height) {
+    return height * 2 / 3;
+  };
+
+  console.log(getWizardHeight(true));
+</script>
 <script src="js/game.js"></script>
 
 </body>
