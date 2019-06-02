@@ -187,15 +187,10 @@
 
   // скоростью фаербола
   var getFireballSpeed = function (left) {
-    if(left) {
-      // фаербол летит по ветру влево
-      return 5;
-    }
-    // летит против ветра вправо
-    return 2
+    // если фаербол летит по ветру влево скорость 5
+    // иначе против ветра вправо 2
+    return left ? 5 : 2;
   };
-
-  getFireballSpeed(true);
 
   //скорость мага
   var wizardSpeed = 3;
@@ -209,15 +204,14 @@
   };
 
   // начальное положение мага по оси Х
-  var getWizardX  = function (width) {
-    return width / 2 - wizardWidth;
-  };
-  // начальное положение мага по оси У
-  var getWizardY = function (height) {
-    return height * 2 / 3;
+  function getWizardX (width) {
+    return width / 2 - wizardWidth / 2;
   };
 
-  console.log(getWizardHeight(true));
+  // начальное положение мага по оси У
+  function getWizardY (height) {
+    return (height - getWizardHeight()) * 1 / 3;
+  };
 </script>
 <script src="js/game.js"></script>
 
