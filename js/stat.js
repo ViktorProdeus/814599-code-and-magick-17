@@ -36,7 +36,10 @@ var getMaxElement = function (arr) {
 
 
 window.renderStatistics = function (ctx, names, times) {
-  renderCloud(ctx, CLOUD_X + GAP, CLOUD_Y + GAP, 'rgba(0, 0, 0, 0.7)');
+  var CLOUD_SHADOW_X = CLOUD_X + GAP;
+  var CLOUD_SHADOW_Y = CLOUD_Y + GAP;
+
+  renderCloud(ctx, CLOUD_SHADOW_X, CLOUD_SHADOW_Y, 'rgba(0, 0, 0, 0.7)');
   renderCloud(ctx, CLOUD_X, CLOUD_Y, '#fff');
 
   getTextValue(ctx, 'Ура вы победили!', 120, 42, '#000000');
