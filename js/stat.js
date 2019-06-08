@@ -2,13 +2,13 @@
 
 var CLOUD_WIDTH = 420;
 var CLOUD_HEIGHT = 270;
+var BAR_WIDTH = 40;
+var BAR_HEIGHT = 150;
 var CLOUD_X = 100;
 var CLOUD_Y = 10;
-var GAP = 10;
-var BAR_HEIGH = 150;
-var BAR_WIDTH = 40;
 var BAR_X = 140;
 var BAR_Y = 100;
+var GAP = 10;
 var BAR_GAP = 50;
 
 var renderCloud = function (ctx, x, y, color) {
@@ -45,17 +45,30 @@ window.renderStatistics = function (ctx, names, times) {
   var maxTime = getMaxElement(times);
 
   for (var i = 0; i < names.length; i++) {
-    getTextValue(ctx, names[i], BAR_X + (BAR_WIDTH + BAR_GAP) * i, CLOUD_HEIGHT, '#000000');
-    getTextValue(ctx, Math.round(times[i]), BAR_X + (BAR_WIDTH + BAR_GAP) * i, CLOUD_HEIGHT - (BAR_HEIGH * times[i] / maxTime) - GAP * 3, '#000000');
+    var playerName = names[i];
+    var PLAYER_NAME_X = BAR_X + (BAR_WIDTH + BAR_GAP) * i;
+    var PLAYER_NAME_Y = CLOUD_HEIGHT;
 
+    getTextValue(ctx, playerName, PLAYER_NAME_X, PLAYER_NAME_Y, '#000000');
+
+    var playerScore = Math.round(times[i]);
+    var PLAYER_SCORE_X = BAR_X + (BAR_WIDTH + BAR_GAP) * i;
+    var PLAYER_SCORE_Y = CLOUD_HEIGHT - (BAR_HEIGHT * times[i] / maxTime) - GAP * 3;
+
+    getTextValue(ctx, playerScore, PLAYER_SCORE_X, PLAYER_SCORE_Y, '#000000');
 
     var randomColor = Math.random().toFixed(2);
-    if (names[i] === 'Вы') {
+
+    if (playerName === 'Вы') {
       ctx.fillStyle = 'rgba(255, 0, 0, 1)';
     } else {
       ctx.fillStyle = 'rgba(0, 0, 255, ' + randomColor + ')';
     }
 
-    ctx.fillRect(BAR_X + (BAR_WIDTH + BAR_GAP) * i, BAR_Y + BAR_HEIGH, BAR_WIDTH, (BAR_HEIGH * times[i] / maxTime) * -1);
+    var BAR_HEIGHT_WINNER = (BAR_HEIGHT * times[i] / maxTime) * -1;
+    var BAR_X_WINNER = BAR_X + (BAR_WIDTH + BAR_GAP) * i;
+    var BAR_Y_WINNER = BAR_Y + BAR_HEIGHT;
+
+    ctx.fillRect(BAR_X_WINNER, BAR_Y_WINNER, BAR_WIDTH, BAR_HEIGHT_WINNER);
   }
 };
