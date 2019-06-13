@@ -17,43 +17,26 @@ var propertiesWizards = {
   // количество волшебников, которых нужно получить случайно
   AMOUNT_WIZARDS: 4,
 
-  NAMES: ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'],
-  SURNAMES: ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'],
+  NAME: ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'],
+  SURNAME: ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'],
   COAT_COLOR: ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'],
   EYES_COLOR: ['black', 'red', 'blue', 'yellow', 'green']
 };
 
-// Функция, возвращающая новый массив из старого в случайном порядке
-function toMixArray(array) {
-  var mixedArray = array.slice();
-  for (var i = 0; i < mixedArray.length; i++) {
-    var randomIndex = Math.floor(Math.random() * (i + 1));
-    var templateValue = mixedArray[i];
-    mixedArray[i] = array[randomIndex];
-    mixedArray[randomIndex] = templateValue;
-  }
-  return mixedArray;
-}
-
 // Функция, возвращающая случайный элемемент массива
 function getRandomElement(array) {
-  for (var i = 0; i < array.length; i++) {
-    var randomIndex = Math.floor(Math.random() * array.length);
-    var randomElement = array[randomIndex];
-  }
+  var randomIndex = Math.floor(Math.random() * array.length);
+  var randomElement = array[randomIndex];
+
   return randomElement;
 }
 
 // Функция, возвращающаая массив объектов магов
 function generateWizards() {
-  var changedWizardNames = toMixArray(propertiesWizards.NAMES);
-  var changedWizardSurnames = toMixArray(propertiesWizards.SURNAMES);
-
   var wizards = [];
   for (var i = 0; i < propertiesWizards.AMOUNT_WIZARDS; i++) {
     wizards.push({
-      names: changedWizardNames[i],
-      surnames: changedWizardSurnames[i],
+      name: getRandomElement(propertiesWizards.NAME) + '\n ' + getRandomElement(propertiesWizards.SURNAME),
       coatColor: getRandomElement(propertiesWizards.COAT_COLOR),
       eyesColor: getRandomElement(propertiesWizards.EYES_COLOR)
     });
@@ -67,7 +50,7 @@ var wizards = generateWizards();
 var renderWizard = function (wizard) {
   var wizardElement = similarWizardTemplate.cloneNode(true);
 
-  wizardElement.querySelector('.setup-similar-label').textContent = wizard.names + '\n ' + wizard.surnames;
+  wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
   wizardElement.querySelector('.wizard-coat').style.fill = wizard.coatColor;
   wizardElement.querySelector('.wizard-eyes').style.fill = wizard.eyesColor;
 
