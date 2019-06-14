@@ -34,6 +34,12 @@ var getMaxElement = function (arr) {
   return maxElement;
 };
 
+var getRandomColor = function () {
+  var randomNumber = Math.random().toFixed(2);
+
+  return 'rgba(0, 0, 255, ' + randomNumber + ')';
+};
+
 
 window.renderStatistics = function (ctx, names, times) {
   var CLOUD_SHADOW_X = CLOUD_X + GAP;
@@ -60,12 +66,10 @@ window.renderStatistics = function (ctx, names, times) {
 
     getTextValue(ctx, playerScore, PLAYER_SCORE_X, PLAYER_SCORE_Y, '#000000');
 
-    var randomColor = Math.random().toFixed(2);
-
     if (playerName === 'Вы') {
       ctx.fillStyle = 'rgba(255, 0, 0, 1)';
     } else {
-      ctx.fillStyle = 'rgba(0, 0, 255, ' + randomColor + ')';
+      ctx.fillStyle = getRandomColor();
     }
 
     var BAR_HEIGHT_WINNER = (BAR_HEIGHT * times[i] / maxTime) * -1;
