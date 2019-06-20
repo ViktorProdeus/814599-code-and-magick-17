@@ -2,14 +2,6 @@
 
 var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
-var setup = document.querySelector('.setup');
-var setupOpen = document.querySelector('.setup-open');
-var setupClose = setup.querySelector('.setup-close');
-var userNameInput = setup.querySelector('.setup-user-name');
-var setupWizard = setup.querySelector('.setup-wizard');
-var wizardCoat = setupWizard.querySelector('.wizard-coat');
-var wizardEyes = setupWizard.querySelector('.wizard-eyes');
-var fireball = setup.querySelector('.setup-fireball-wrap');
 
 // Из условия задания описал обьект со свойствами волшебников
 var propertiesWizards = {
@@ -32,80 +24,83 @@ var onPopupEscPress = function (evt) {
 
 // Функция открытия popup
 var openPopup = function () {
-  setup.classList.remove('hidden');
+  document.querySelector('.setup').classList.remove('hidden');
   document.addEventListener('keydown', onPopupEscPress);
 };
 
 // Функция закрытия popup
 var closePopup = function () {
-  setup.classList.add('hidden');
+  document.querySelector('.setup').classList.add('hidden');
   document.removeEventListener('keydown', onPopupEscPress);
 };
 
-// обработчик на открытие popup по клику
-setupOpen.addEventListener('click', function () {
-  openPopup();
-});
-
-// обработчик на открытие popup по клавиатуре
-setupOpen.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
-    openPopup();
-  }
-});
-
-// обработчик на закрытие popup по клику
-setupClose.addEventListener('click', function () {
-  closePopup();
-});
-
-// обработчик на закрытие popup по клавиатуре
-setupClose.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
-    closePopup();
-  }
-});
-
-// обработчик на валидацию поля имени в форме popup
-userNameInput.addEventListener('keydown', function () {
-  document.removeEventListener('keydown', onPopupEscPress);
-});
-
-// обработчик на валидацию поля имени в форме popup
-userNameInput.addEventListener('invalid', function () {
-  if (userNameInput.validity.tooShort) {
-    userNameInput.setCustomValidity('Имя должно состоять минимум из 2-х символов');
-  } else if (userNameInput.validity.tooLong) {
-    userNameInput.setCustomValidity('Имя не должно превышать 25-ти символов');
-  } else if (userNameInput.validity.valueMissing) {
-    userNameInput.setCustomValidity('Обязательное поле');
-  }
-});
-
-// обработчик, который вносит дополнения в валидацию поля имени в форме popup
-userNameInput.addEventListener('input', function (evt) {
+document.addEventListener('click', function (evt) {
   var target = evt.target;
-  if (target.value.length > 1 && target.value.length < 3) {
-    target.setCustomValidity('Имя все еще короткое');
-  } else {
-    target.setCustomValidity('');
+
+  while (target !== document) {
+    if (target.classList.contains('setup-open')) {
+      openPopup(target);
+      return;
+    }
+    if (target.classList.contains('setup-close')) {
+      closePopup(target);
+      return;
+    }
+    if (target.classList.contains('setup-fireball-wrap')) {
+      target.style.background = getRandomElement(propertiesWizards.FIREBALL_COLOR);
+      return;
+    }
+    if (target.classList.contains('wizard-coat')) {
+      target.style.fill = getRandomElement(propertiesWizards.COAT_COLOR);
+      return;
+    }
+    if (target.classList.contains('wizard-eyes')) {
+      target.style.fill = getRandomElement(propertiesWizards.EYES_COLOR);
+    }
+
+    target = target.parentNode;
   }
 });
 
-// обработчик, который меняет цвет плаща
-wizardCoat.addEventListener('click', function () {
-  wizardCoat.style.fill = getRandomElement(propertiesWizards.COAT_COLOR);
+document.addEventListener('keydown', function (evt) {
+  var target = evt.target;
+
+  while (target !== document) {
+    if (target.classList.contains('setup-open') && evt.keyCode === ENTER_KEYCODE) {
+      openPopup();
+      return;
+    }
+    if (target.classList.contains('setup-close') && evt.keyCode === ENTER_KEYCODE) {
+      closePopup();
+      return;
+    }
+
+    target = target.parentNode;
+  }
 });
 
-// обработчик, который меняет цвет глаз
-wizardEyes.addEventListener('click', function () {
-  wizardEyes.style.fill = getRandomElement(propertiesWizards.EYES_COLOR);
-});
+document.addEventListener('focus', function (evt) {
+  var target = evt.target;
 
-// обработчик, который меняет цвет огненного шара
-fireball.addEventListener('click', function () {
-  fireball.style.background = getRandomElement(propertiesWizards.FIREBALL_COLOR);
-});
+  while (target !== document) {
+    if (target.classList.contains('setup-user-name')) {
+      document.removeEventListener('keydown', onPopupEscPress);
+    }
+    target = target.parentNode;
+  }
+}, true);
+
+document.addEventListener('blur', function (evt) {
+  var target = evt.target;
+
+  while (target !== document) {
+    if (target.classList.contains('setup-user-name')) {
+      document.addEventListener('keydown', onPopupEscPress);
+    }
+    target = target.parentNode;
+  }
+}, true);
+
 
 // Функция, возвращающая случайный элемемент массива
 function getRandomElement(array) {
@@ -159,5 +154,3 @@ function addtoSetupSimilar(wizards) {
 }
 
 addtoSetupSimilar(generateWizards());
-
-
