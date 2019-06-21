@@ -1,16 +1,7 @@
 'use strict';
 
-// Нашли попап и показали его
-var userDialog = document.querySelector('.setup');
-userDialog.classList.remove('hidden');
-
-// Нашли cписок похожих персонажей
-var similarListElement = userDialog.querySelector('.setup-similar-list');
-
-// Нашли шаблон и контент внутри него
-var similarWizardTemplate = document.querySelector('#similar-wizard-template')
-  .content
-  .querySelector('.setup-similar-item');
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
 
 // Из условия задания описал обьект со свойствами волшебников
 var propertiesWizards = {
@@ -20,8 +11,96 @@ var propertiesWizards = {
   NAME: ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'],
   SURNAME: ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'],
   COAT_COLOR: ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'],
-  EYES_COLOR: ['black', 'red', 'blue', 'yellow', 'green']
+  EYES_COLOR: ['black', 'red', 'blue', 'yellow', 'green'],
+  FIREBALL_COLOR: ['#ee4830', '#30a8ee', '#5ce6c0', '#e848d5', '#e6e848']
 };
+
+// Объявили обработчик ESC
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closePopup();
+  }
+};
+
+// Функция открытия popup
+var openPopup = function () {
+  document.querySelector('.setup').classList.remove('hidden');
+  document.addEventListener('keydown', onPopupEscPress);
+};
+
+// Функция закрытия popup
+var closePopup = function () {
+  document.querySelector('.setup').classList.add('hidden');
+  document.removeEventListener('keydown', onPopupEscPress);
+};
+
+document.addEventListener('click', function (evt) {
+  var target = evt.target;
+
+  while (target !== document) {
+    if (target.classList.contains('setup-open')) {
+      openPopup(target);
+      return;
+    }
+    if (target.classList.contains('setup-close')) {
+      closePopup(target);
+      return;
+    }
+    if (target.classList.contains('setup-fireball-wrap')) {
+      target.style.background = getRandomElement(propertiesWizards.FIREBALL_COLOR);
+      return;
+    }
+    if (target.classList.contains('wizard-coat')) {
+      target.style.fill = getRandomElement(propertiesWizards.COAT_COLOR);
+      return;
+    }
+    if (target.classList.contains('wizard-eyes')) {
+      target.style.fill = getRandomElement(propertiesWizards.EYES_COLOR);
+    }
+
+    target = target.parentNode;
+  }
+});
+
+document.addEventListener('keydown', function (evt) {
+  var target = evt.target;
+
+  while (target !== document) {
+    if (target.classList.contains('setup-open') && evt.keyCode === ENTER_KEYCODE) {
+      openPopup();
+      return;
+    }
+    if (target.classList.contains('setup-close') && evt.keyCode === ENTER_KEYCODE) {
+      closePopup();
+      return;
+    }
+
+    target = target.parentNode;
+  }
+});
+
+document.addEventListener('focus', function (evt) {
+  var target = evt.target;
+
+  while (target !== document) {
+    if (target.classList.contains('setup-user-name')) {
+      document.removeEventListener('keydown', onPopupEscPress);
+    }
+    target = target.parentNode;
+  }
+}, true);
+
+document.addEventListener('blur', function (evt) {
+  var target = evt.target;
+
+  while (target !== document) {
+    if (target.classList.contains('setup-user-name')) {
+      document.addEventListener('keydown', onPopupEscPress);
+    }
+    target = target.parentNode;
+  }
+}, true);
+
 
 // Функция, возвращающая случайный элемемент массива
 function getRandomElement(array) {
@@ -44,10 +123,11 @@ function generateWizards() {
   return wizards;
 }
 
-var wizards = generateWizards();
-
 // Генерируем шаблон волшебника
-var renderWizard = function (wizard) {
+function renderWizard(wizard) {
+  var similarWizardTemplate = document.querySelector('#similar-wizard-template')
+    .content
+    .querySelector('.setup-similar-item');
   var wizardElement = similarWizardTemplate.cloneNode(true);
 
   wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
@@ -55,13 +135,22 @@ var renderWizard = function (wizard) {
   wizardElement.querySelector('.wizard-eyes').style.fill = wizard.eyesColor;
 
   return wizardElement;
-};
-
-var fragment = document.createDocumentFragment();
-
-for (var i = 0; i < wizards.length; i++) {
-  fragment.appendChild(renderWizard(wizards[i]));
 }
-similarListElement.appendChild(fragment);
 
-userDialog.querySelector('.setup-similar').classList.remove('hidden');
+// Добавляем шаблон в разметку
+function addtoSetupSimilar(wizards) {
+  var dialogWizardz = document.querySelector('.setup-similar');
+  dialogWizardz.classList.remove('hidden');
+  var similarListElement = document.querySelector('.setup-similar-list');
+  var fragment = document.createDocumentFragment();
+
+  for (var i = 0; i < wizards.length; i++) {
+    fragment.appendChild(renderWizard(wizards[i]));
+  }
+
+  similarListElement.appendChild(fragment);
+
+  return fragment;
+}
+
+addtoSetupSimilar(generateWizards());
