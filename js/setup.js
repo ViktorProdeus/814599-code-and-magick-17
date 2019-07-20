@@ -32,6 +32,8 @@ var openPopup = function () {
 var closePopup = function () {
   document.querySelector('.setup').classList.add('hidden');
   document.removeEventListener('keydown', onPopupEscPress);
+  document.querySelector('.setup').style.top = '';
+  document.querySelector('.setup').style.left = '';
 };
 
 document.addEventListener('click', function (evt) {
