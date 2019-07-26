@@ -110,18 +110,6 @@
     return randomElement;
   }
 
-  // Функция, возвращающаая массив объектов магов
-  function generateWizards() {
-    var wizards = [];
-    for (var i = 0; i < propertiesWizards.AMOUNT_WIZARDS; i++) {
-      wizards.push({
-        name: getRandomElement(propertiesWizards.NAME) + '\n ' + getRandomElement(propertiesWizards.SURNAME),
-        coatColor: getRandomElement(propertiesWizards.COAT_COLOR),
-        eyesColor: getRandomElement(propertiesWizards.EYES_COLOR)
-      });
-    }
-    return wizards;
-  }
 
   // Генерируем шаблон волшебника
   function renderWizard(wizard) {
@@ -131,28 +119,49 @@
     var wizardElement = similarWizardTemplate.cloneNode(true);
 
     wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
-    wizardElement.querySelector('.wizard-coat').style.fill = wizard.coatColor;
-    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.eyesColor;
+    wizardElement.querySelector('.wizard-coat').style.fill = wizard.colorCoat;
+    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.colorEyes;
 
     return wizardElement;
   }
 
-  // Добавляем шаблон в разметку
-  function addtoSetupSimilar(wizards) {
+  var successHandler = function (wizards) {
     var dialogWizardz = document.querySelector('.setup-similar');
     dialogWizardz.classList.remove('hidden');
     var similarListElement = document.querySelector('.setup-similar-list');
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < wizards.length; i++) {
+    for (var i = 0; i < 4; i++) {
       fragment.appendChild(renderWizard(wizards[i]));
     }
 
     similarListElement.appendChild(fragment);
 
     return fragment;
-  }
+  };
 
-  addtoSetupSimilar(generateWizards());
+  var errorHandler = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
 
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
+
+  window.load(successHandler, errorHandler);
+
+  // addtoSetupSimilar(generateWizards());
+
+  var userDialog = document.querySelector('.setup-similar');
+  var form = userDialog.querySelector('.setup-wizard-form');
+  form.addEventListener('submit', function (evt) {
+    window.upload(new FormData(form), function () {
+      userDialog.classList.add('hidden');
+    });
+    evt.preventDefault();
+  });
 })();
